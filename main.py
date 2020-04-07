@@ -18,7 +18,7 @@ from enum import Enum
 board = ['-', '-', '-', '-', '-', '-', '-', '-', '-']
 
 # define an enum to determine current player
-class current_player(Enum):
+class player(Enum):
   X_player = 1,
   O_player = 2
   
@@ -44,7 +44,7 @@ def play_game():
 #  continue the game since game_still_going be false
   while game_still_going:
     # handle the movement of player
-    handle_turn(current_player)
+    handle_turn(player)
 
     # Check if the game has ended
     check_if_game_over()
@@ -53,9 +53,9 @@ def play_game():
     flip_player()
 
   # The game has ended
-  if winner == current_player.X_player:
+  if winner == player.X_player:
     print('X won.')
-  elif winner == current_player.O_player:
+  elif winner == player.O_player:
     print('O won.')
   else:
     print('Tie.')
@@ -87,12 +87,104 @@ def check_if_game_over():
   return
 
 def check_for_winner():
+  #declare the global winner var
+  global winner
+  
   # check rows
+  row_winner = check_rows()
 
   # check columns
+  column_winner = check_columns()
 
   # check daigonals
-  return
+  daigonals_winner = check_daigonals()
+
+  # Get the winner
+  if row_winner:
+    winner = row_winner
+
+  elif column_winner:
+    winner = column_winner
+  
+  elif daigonals_winner:
+    winner = daigonals_winner
+  
+  else:
+    winner = None
+
+  return  
+
+
+# if there was a winner swith the value of game_still_going and return the winner player
+def check_rows():
+  #declare the global variable
+  global game_still_going
+
+  # check if all the values in a row are the same (but not -)
+  row1 = board[0] == board[1] == board[2] != '-'
+  row2 = board[3] == board[4] == board[5] != '-'
+  row3 = board[6] == board[7] == board[8] != '-'
+  
+  # return the winner player
+  if row1:
+    game_still_going = False
+    return player.X_player if board[0] == 'X' else player.O_player
+  
+  elif row2:
+    game_still_going = False
+    return player.X_player if board[3]=='X' else player.O_player
+
+  elif row3:
+    game_still_going = False
+    return player.X_player if board[6]=='X' else player.O_player
+  else:
+    return None
+
+# if there was a winner swith the value of game_still_going and return the winner player
+def check_columns():
+    #declare the global variable
+  global game_still_going
+
+  # check if all the values in a row are the same (but not -)
+  column1 = board[0] == board[3] == board[4] != '-'
+  column2 = board[1] == board[4] == board[7] != '-'
+  column3 = board[2] == board[5] == board[8] != '-'
+  
+  # return the winner player
+  if column1:
+    game_still_going = False
+    return player.X_player if board[0] == 'X' else player.O_player
+  
+  elif column2:
+    game_still_going = False
+    return player.X_player if board[1]=='X' else player.O_player
+
+  elif column3:
+    game_still_going = False
+    return player.X_player if board[2]=='X' else player.O_player
+  else:
+    return None
+
+# if there was a winner swith the value of game_still_going and return the winner player
+def check_daigonals():
+  #declare the global variable
+  global game_still_going
+
+  # check if all the values in a row are the same (but not -)
+  daigonals1 = board[0] == board[4] == board[8] != '-'
+  daigonals2 = board[2] == board[4] == board[6] != '-'
+
+  # return the winner player
+  if daigonals1:
+    game_still_going = False
+    return player.X_player if board[0] == 'X' else player.O_player
+  
+  elif daigonals2:
+    game_still_going = False
+    return player.X_player if board[1]=='X' else player.O_player
+  else:
+    return None  
+
 
 
 def check_if_tie() :

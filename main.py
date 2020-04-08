@@ -45,7 +45,15 @@ def display_board():
 def play_game():
   
   # declare global variable
-  global current_player
+  global current_player, winner, game_still_going
+
+  # Set all the board positions to '-'
+  for i in range (9):
+    board[i] = '-'
+   
+  # set global variables to the default values (when a user want to play again)
+  winner = None
+  game_still_going = True
 
   # ask which player start the game (X or O)
   initial_player = input("Which player wants to start the game, X or O ? ")
@@ -83,36 +91,44 @@ def play_game():
       print('O won, congratulation')
   else:
       print('Tie.')
+  
+  # ask for play again
+  play_again()
 
 
 # Handle a single turn of an arbitrary player
-def handle_turn(player):
-    position = input("please select a position between 1-9: ")
-    is_not_digit = True
-    # Check if the entered number is valid or not
-    while is_not_digit:
-        if (position.isdigit() and int(position) < 10 and int(position) > 0):
-            position = int(position) - 1
-        else:
-            position = input("please enter a valid number between 1-9: ")
-            continue
-        
-        if(board[position] == '-'):
-          # Check 'X' should be written or 'O'
-          if(player == player.X_player):
-            board[position] = "X"
-          else:
-            board[position] = "O"
+def handle_turn(players):
+  #global player
+  print()
+  if (players == player.X_player):
+    print ("X's turn")
+  else:
+    print ("O's turn")
 
-          is_not_digit = False
-        
+  position = input("please Choose a position from 1-9: ")
+  # Check if the entered number is valid or not
+  while True:
+      if (position.isdigit() and int(position) < 10 and int(position) > 0):
+          position = int(position) - 1
+      else:
+          position = input("Invalid input, please Choose a valid number from 1-9: ")
+          continue
+      
+      if(board[position] == '-'):
+        # Check 'X' should be written or 'O'
+        if(players == player.X_player):
+          board[position] = "X"
         else:
-         print()
-         position = input("please enter a valid number between 1-9, note that the entered position should be empty '-'.")
+          board[position] = "O"
+        
+        # exit the while loop
+        break
+      
+      else:
+        print()
+        position = input("Invalid Input, note that the choosen position should be empty '-'.")
 
-    
-    
-    display_board()
+  display_board()
 
 
 def check_if_game_over():
@@ -223,11 +239,10 @@ def check_daigonals():
 
 def check_if_tie():
   # Declare the global variables
-  global game_still_going, winner
+  global game_still_going
 
-  if (board[0]!='-' and board[1]!='-' and board[2]!='-' and board[3]!='-' and board[4]!='-' and board[5]!='-' and board[6]!='-' and board[7]!='-' and board[8]!='-'):
+  if '-' not in board:
     game_still_going = False
-    #winner = None
 
   return
 
@@ -243,6 +258,21 @@ def flip_player():
     current_player = player.X_player
 
     return
+
+# Ask if the user wants to play again
+def play_again():
+  play_again = input('Do you want to play again, yes or no?')
+  yes = {'yes', 'y', 'yeah'}
+  no = {'no', 'n'}
+  while True:
+    if play_again.lower() in yes:
+      play_game()
+      break
+    elif play_again.lower() in no:
+      exit
+      break
+    else:
+      play_again = input('Enter a valid response, yes or no?')
 
 
 play_game()
